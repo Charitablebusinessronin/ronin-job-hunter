@@ -8,11 +8,12 @@ import { createJobRepository } from '@/lib/notion';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const repository = createJobRepository();
-    const job = await repository.getJobById(params.id);
+    const job = await repository.getJobById(id);
 
     if (!job) {
       return NextResponse.json(
@@ -33,21 +34,22 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const repository = createJobRepository();
 
     if (body.status) {
-      await repository.updateJobStatus(params.id, body.status);
+      await repository.updateJobStatus(id, body.status);
     }
 
     if (body.feedback) {
-      await repository.addFeedback(params.id, body.feedback);
+      await repository.addFeedback(id, body.feedback);
     }
 
-    const job = await repository.getJobById(params.id);
+    const job = await repository.getJobById(id);
 
     return NextResponse.json({ job }, { status: 200 });
   } catch (error: any) {

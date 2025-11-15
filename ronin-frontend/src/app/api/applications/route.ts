@@ -4,19 +4,22 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { notionClient } from '@/lib/notion/client';
+import { createNotionClient } from '@/lib/notion/client';
 
 export async function GET(request: NextRequest) {
   try {
     const applicationsDatabaseId = process.env.NEXT_PUBLIC_NOTION_APPLICATIONS_DB_ID;
+    const notionApiKey = process.env.NEXT_PUBLIC_NOTION_API_KEY;
 
-    if (!applicationsDatabaseId) {
+    if (!applicationsDatabaseId || !notionApiKey) {
       return NextResponse.json(
-        { error: 'Applications database ID not configured' },
+        { error: 'Applications database ID or API key not configured' },
         { status: 500 }
       );
     }
 
+    const notionClient = createNotionClient(notionApiKey);
+    // @ts-expect-error - Notion client v5 types may be incomplete for databases.query
     const response = await notionClient.databases.query({
       database_id: applicationsDatabaseId,
       sorts: [

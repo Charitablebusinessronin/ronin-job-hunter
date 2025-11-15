@@ -16,6 +16,7 @@ class CDPSessionManager {
 
     /**
      * Connect to existing Chrome instance via CDP
+     * Supports both direct Chrome and browserless
      */
     async connect() {
         try {
@@ -23,17 +24,26 @@ class CDPSessionManager {
             const response = await axios.get(`${this.debugUrl}/json/version`);
             console.log('CDP Version:', response.data);
 
-            // Get browser WebSocket URL
-            const targets = await axios.get(`${this.debugUrl}/json/list`);
-            const browserTarget = targets.data.find(t => t.type === 'browser');
+            let webSocketUrl = null;
 
-            if (!browserTarget) {
-                throw new Error('No browser target found');
+            // Browserless provides webSocketDebuggerUrl directly in version response
+            if (response.data.webSocketDebuggerUrl) {
+                webSocketUrl = response.data.webSocketDebuggerUrl;
+            } else {
+                // For direct Chrome, get browser target from list
+                const targets = await axios.get(`${this.debugUrl}/json/list`);
+                const browserTarget = targets.data.find(t => t.type === 'browser');
+                
+                if (!browserTarget) {
+                    throw new Error('No browser target found');
+                }
+                
+                webSocketUrl = browserTarget.webSocketDebuggerUrl;
             }
 
             // Connect to browser
             this.browser = await puppeteer.connect({
-                browserWSEndpoint: browserTarget.webSocketDebuggerUrl,
+                browserWSEndpoint: webSocketUrl,
                 defaultViewport: null,
             });
 

@@ -110,6 +110,7 @@ export class NotionJobRepository implements JobRepository {
         { property: 'Posted At', direction: 'descending' },
       ];
 
+      // @ts-ignore - Notion client types may be incomplete for databases.query
       const response = await this.client.databases.query(query);
       const jobs = response.results.map((page: any) => this.notionPageToJob(page));
 
@@ -117,7 +118,7 @@ export class NotionJobRepository implements JobRepository {
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
         return jobs.filter(
-          job =>
+          (job: NotionJob) =>
             job.title.toLowerCase().includes(searchLower) ||
             job.company.toLowerCase().includes(searchLower) ||
             job.location.toLowerCase().includes(searchLower)
