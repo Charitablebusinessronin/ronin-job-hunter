@@ -7,6 +7,7 @@ const KeywordInjector = require('../ai/keyword-injector');
 const PDFGenerator = require('./generator');
 const Logger = require('../utils/logger');
 const DatabaseManager = require('../db/database');
+const NotionProfileFetcher = require('../notion/profile-fetcher');
 
 class ResumeBuilder {
     constructor(config = {}) {
@@ -20,6 +21,63 @@ class ResumeBuilder {
         this.db = config.db || new DatabaseManager(config.dbPath);
         this.masterResume = config.masterResume || {};
         this.logger = new Logger('ResumeBuilder');
+        
+        // Initialize profile fetcher if Notion config provided
+        if (config.notionApiKey && config.profileDatabaseId) {
+            this.profileFetcher = new NotionProfileFetcher({
+                notionApiKey: config.notionApiKey,
+                profileDatabaseId: config.profileDatabaseId,
+            });
+        } else {
+            this.profileFetcher = null;
+        }
+        
+        // Cache for profile data
+        this._profileDataCache = null;
+    }
+
+    /**
+     * Load master resume from Notion profile database
+     * @returns {Promise<Object>} Master resume data
+     */
+    async loadMasterResumeFromNotion() {
+        if (this._profileDataCache) {
+            return this._profileDataCache;
+        }
+
+        if (!this.profileFetcher) {
+            this.logger.warn('Profile fetcher not configured, using empty master resume');
+            return {};
+        }
+
+        try {
+            this.logger.info('Loading master resume from Notion profile database');
+            const resumeData = await this.profileFetcher.getResumeData();
+            this._profileDataCache = resumeData;
+            this.logger.info('Master resume loaded from Notion', {
+                workExperience: resumeData.workExperience?.length || 0,
+                skills: resumeData.skills?.length || 0,
+            });
+            return resumeData;
+        } catch (error) {
+            this.logger.error('Failed to load master resume from Notion', error);
+            // Return empty object as fallback
+            return {};
+        }
+    }
+
+    /**
+     * Get master resume (from config or Notion)
+     * @returns {Promise<Object>} Master resume data
+     */
+    async getMasterResume() {
+        // If masterResume is already provided in config, use it
+        if (this.masterResume && Object.keys(this.masterResume).length > 0) {
+            return this.masterResume;
+        }
+
+        // Otherwise, try to load from Notion
+        return await this.loadMasterResumeFromNotion();
     }
 
     /**
@@ -35,13 +93,16 @@ class ResumeBuilder {
         });
 
         try {
+            // Get master resume (from config or Notion)
+            const masterResume = await this.getMasterResume();
+            
             // Extract keywords from job description
             const keywords = await this.keywordInjector.extractKeywords(job.description, 5);
             this.logger.info('Keywords extracted', { keywords });
 
             // Tailor resume with keywords
             const tailoredResume = await this.keywordInjector.tailorResume(
-                JSON.stringify(this.masterResume),
+                JSON.stringify(masterResume),
                 keywords,
                 job.description
             );
@@ -52,13 +113,13 @@ class ResumeBuilder {
                 resumeData = JSON.parse(tailoredResume);
             } catch (e) {
                 // If not JSON, use master resume as fallback
-                resumeData = this.masterResume;
+                resumeData = masterResume;
             }
 
             // Generate cover letter
             const coverLetterContent = await this.keywordInjector.generateCoverLetter(
                 job,
-                JSON.stringify(this.masterResume),
+                JSON.stringify(masterResume),
                 keywords
             );
 

@@ -73,6 +73,7 @@ Create a `.env` file in the project root:
 NOTION_API_KEY="your_notion_api_key"
 NOTION_JOBS_DB_ID="your_jobs_database_id"
 NOTION_APPLICATIONS_DB_ID="your_applications_database_id"
+NOTION_PROFILE_DB_ID="your_profile_database_id"  # Optional: For personal profile integration
 
 # OpenAI Configuration
 OPENAI_API_KEY="your_openai_api_key"
@@ -90,6 +91,24 @@ CHROME_TOKEN="optional_chrome_token"
 - Open your database in Notion
 - Copy the URL (e.g., `https://www.notion.so/abc123def456...`)
 - The database ID is the part after the last `/` (remove any `?v=...` query params)
+
+**Profile Database (Optional):**
+The system can automatically load your personal profile from Notion's "📝 Sabir's Professional Profile" database for resume generation. To set this up:
+
+```bash
+# Get the profile database ID automatically
+node scripts/get-profile-db-id.js
+
+# Or manually add to .env:
+NOTION_PROFILE_DB_ID="your_profile_database_id"
+```
+
+The profile database should have entries with:
+- **Type**: Work Experience, Education, Skill, Project, Certification, Achievement, Personal
+- **Include in Resume**: Checkbox to filter which entries to use
+- **Display Order**: Number to control ordering
+- **Skills Used**: Multi-select tags for skills
+- **Time Period**: Date range for work/education entries
 
 ### 3. Start Backend Services
 

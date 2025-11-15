@@ -13,6 +13,7 @@ const NotionJobsSync = require('../notion/jobs-sync');
 const ResumeBuilder = require('../pdf/resume-builder');
 const NotionApplicationsSync = require('../notion/applications-sync');
 const Logger = require('../utils/logger');
+const NotionProfileFetcher = require('../notion/profile-fetcher');
 
 class MainWorkflow {
     constructor(config = {}) {
@@ -33,12 +34,21 @@ class MainWorkflow {
             notionApiKey: process.env.NOTION_API_KEY,
             jobsDatabaseId: process.env.NOTION_JOBS_DB_ID,
         });
+        // Initialize profile fetcher if configured
+        let masterResume = config.masterResume;
+        if (!masterResume && process.env.NOTION_API_KEY && process.env.NOTION_PROFILE_DB_ID) {
+            // Profile will be loaded lazily by ResumeBuilder
+            this.logger.info('Notion profile database configured, will load resume data from Notion');
+        }
+
         this.resumeBuilder = new ResumeBuilder({
             openaiApiKey: process.env.OPENAI_API_KEY,
             debugPort: this.config.debugPort,
             outputDir: this.config.outputDir,
             db: this.db,
-            masterResume: config.masterResume || {},
+            masterResume: masterResume || {},
+            notionApiKey: process.env.NOTION_API_KEY,
+            profileDatabaseId: process.env.NOTION_PROFILE_DB_ID,
         });
         this.applicationsSync = new NotionApplicationsSync({
             notionApiKey: process.env.NOTION_API_KEY,
