@@ -1,0 +1,54 @@
+# Workflow Configuration
+
+dry_run: false  # Set to true to skip PDF generation and Notion writes
+
+# Search Criteria
+search:
+  locations:
+    - Charlotte, NC 28213
+    - Remote
+  keywords_include:
+    - ecommerce
+    - shopify
+    - procurement
+    - sourcing
+    - cpg
+    - consumer packaged goods
+    - dtc
+    - direct to consumer
+    - sales
+    - channel
+    - distribution
+  keywords_exclude:
+    - unpaid
+    - internship
+    - volunteer
+    - campus
+  role_focus:
+    - E-commerce Manager
+    - Procurement
+    - CPG Sales
+    - Sales
+
+# Scoring
+scoring:
+  ready_threshold: 70
+
+# Rate Limiting
+rate_limiting:
+  base_delay_ms: 2000
+  max_delay_ms: 16000
+  max_retries: 3
+  circuit_breaker_threshold: 3
+
+# Notion
+notion:
+  batch_size: 10
+  delay_between_requests_ms: 350
+
+# PDF Generation
+pdf:
+  output_dir: ./outputs
+  format: A4
+  margin_inches: 0.75
+

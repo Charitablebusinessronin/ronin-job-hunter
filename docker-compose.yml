@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ronin-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-changeme}
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/New_York
+      - NODE_ENV=production
+      - NOTION_API_KEY=${NOTION_API_KEY}
+      - NOTION_JOBS_DB_ID=${NOTION_JOBS_DB_ID}
+      - NOTION_APPLICATIONS_DB_ID=${NOTION_APPLICATIONS_DB_ID}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CHROME_DEBUG_PORT=9222
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./backend:/app/backend
+      - ./outputs:/app/outputs
+      - ./sqlite:/app/sqlite
+    depends_on:
+      - chrome
+    networks:
+      - ronin-network
+
+  chrome:
+    image: browserless/chrome:latest
+    container_name: ronin-chrome
+    restart: unless-stopped
+    ports:
+      - "9222:3000"
+    environment:
+      - CONNECTION_TIMEOUT=60000
+      - MAX_CONCURRENT_SESSIONS=10
+      - CHROME_REFRESH_TIME=300000
+      - ENABLE_CORS=true
+      - TOKEN=${CHROME_TOKEN:-}
+    volumes:
+      - chrome_data:/app/.local-data
+      - ${CHROME_PROFILE_PATH:-./chrome-profile}:/app/chrome-profile:ro
+    networks:
+      - ronin-network
+    shm_size: 2gb
+
+volumes:
+  n8n_data:
+    driver: local
+  chrome_data:
+    driver: local
+
+networks:
+  ronin-network:
+    driver: bridge
+

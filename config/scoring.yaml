@@ -1,0 +1,30 @@
+# Scoring Configuration
+# Adjust these values to fine-tune job scoring
+
+ready_threshold: 70  # Minimum score for "Ready" status
+
+rubric:
+  title:
+    max: 30
+    exact_match: 30
+    partial_match: 15
+  
+  skills:
+    max: 25
+    points_per_match: 3
+  
+  location:
+    max: 20
+    remote: 20
+    charlotte: 15
+  
+  recency:
+    max: 15
+    days_7: 15
+    days_14: 10
+    days_30: 5
+  
+  company_fit:
+    max: 10
+    points: 10
+

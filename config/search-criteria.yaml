@@ -1,0 +1,35 @@
+# Job Search Criteria Configuration
+
+locations:
+  - Charlotte, NC 28213 (within 25 miles)
+  - Remote (US-wide)
+
+role_focus:
+  - E-commerce Manager
+  - Procurement
+  - CPG Sales
+  - Sales (COBs)
+
+keywords_include:
+  - ecommerce
+  - Shopify
+  - marketplace
+  - procurement
+  - sourcing
+  - CPG
+  - DTC
+  - sales
+  - channel
+  - distribution
+
+keywords_exclude:
+  - unpaid
+  - internship
+  - volunteer
+  - campus
+
+hard_filters:
+  exclude_non_manager_internships: true
+  exclude_below_mid_level: true
+  preferred_cpg_dtc: true
+

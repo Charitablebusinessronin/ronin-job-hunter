@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Letter - {{COMPANY}} - {{ROLE}}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .date {
+            text-align: right;
+            margin-bottom: 20px;
+            font-size: 10pt;
+        }
+        
+        .recipient {
+            margin-bottom: 20px;
+        }
+        
+        .recipient-name {
+            font-weight: bold;
+        }
+        
+        .greeting {
+            margin-bottom: 15px;
+        }
+        
+        .paragraph {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .closing {
+            margin-top: 30px;
+        }
+        
+        .signature {
+            margin-top: 40px;
+        }
+        
+        .keywords-highlight {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="date">{{DATE}}</div>
+        <div class="recipient">
+            {{#CONTACT_NAME}}
+            <div class="recipient-name">{{CONTACT_NAME}}</div>
+            {{/CONTACT_NAME}}
+            <div>{{COMPANY}}</div>
+            {{#COMPANY_ADDRESS}}
+            <div>{{COMPANY_ADDRESS}}</div>
+            {{/COMPANY_ADDRESS}}
+        </div>
+    </div>
+    
+    <div class="greeting">
+        {{#CONTACT_NAME}}Dear {{CONTACT_NAME}},{{/CONTACT_NAME}}
+        {{^CONTACT_NAME}}Dear Hiring Manager,{{/CONTACT_NAME}}
+    </div>
+    
+    <div class="paragraph">
+        {{PARAGRAPH_1}}
+    </div>
+    
+    <div class="paragraph">
+        {{PARAGRAPH_2}}
+    </div>
+    
+    <div class="paragraph">
+        {{PARAGRAPH_3}}
+    </div>
+    
+    <div class="closing">
+        <div>Sincerely,</div>
+        <div class="signature">{{NAME}}</div>
+    </div>
+</body>
+</html>
+

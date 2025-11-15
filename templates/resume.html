@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - {{COMPANY}} - {{ROLE}}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        .header h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .header .headline {
+            font-size: 12pt;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .contact-info {
+            font-size: 10pt;
+            margin-top: 10px;
+        }
+        
+        .contact-info span {
+            margin: 0 10px;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            margin-bottom: 10px;
+            padding-bottom: 3px;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 15px;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .item-title {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        
+        .item-company {
+            font-style: italic;
+        }
+        
+        .item-date {
+            font-size: 10pt;
+            color: #666;
+        }
+        
+        .item-description {
+            margin-top: 5px;
+            padding-left: 15px;
+        }
+        
+        .item-description ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        
+        .item-description li {
+            margin-bottom: 3px;
+        }
+        
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-tag {
+            background-color: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10pt;
+        }
+        
+        .keywords-highlight {
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{NAME}}</h1>
+        <div class="headline">{{HEADLINE}}</div>
+        <div class="contact-info">
+            <span>{{EMAIL}}</span>
+            <span>|</span>
+            <span>{{PHONE}}</span>
+            <span>|</span>
+            <span>{{LOCATION}}</span>
+            {{#LINKEDIN}}<span>|</span><span>{{LINKEDIN}}</span>{{/LINKEDIN}}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Professional Summary</div>
+        <div>{{SUMMARY}}</div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Core Skills</div>
+        <div class="skills">
+            {{#SKILLS}}
+            <span class="skill-tag">{{.}}</span>
+            {{/SKILLS}}
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Professional Experience</div>
+        {{#EXPERIENCE}}
+        <div class="experience-item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">{{title}}</span>
+                    <span class="item-company"> - {{company}}</span>
+                </div>
+                <span class="item-date">{{startDate}} - {{endDate}}</span>
+            </div>
+            <div class="item-description">
+                <ul>
+                    {{#bullets}}
+                    <li>{{.}}</li>
+                    {{/bullets}}
+                </ul>
+            </div>
+        </div>
+        {{/EXPERIENCE}}
+    </div>
+    
+    <div class="section">
+        <div class="section-title">Education</div>
+        {{#EDUCATION}}
+        <div class="education-item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">{{degree}}</span>
+                    <span class="item-company"> - {{school}}</span>
+                </div>
+                <span class="item-date">{{year}}</span>
+            </div>
+        </div>
+        {{/EDUCATION}}
+    </div>
+    
+    {{#CERTIFICATIONS}}
+    <div class="section">
+        <div class="section-title">Certifications</div>
+        {{#.}}
+        <div class="education-item">
+            <div class="item-header">
+                <span class="item-title">{{name}}</span>
+                <span class="item-date">{{year}}</span>
+            </div>
+        </div>
+        {{/.}}
+    </div>
+    {{/CERTIFICATIONS}}
+</body>
+</html>
+

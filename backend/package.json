@@ -1,0 +1,24 @@
+{
+  "name": "ronin-job-hunter-backend",
+  "version": "1.0.0",
+  "description": "Backend utilities for Ronin Job Hunter",
+  "main": "index.js",
+  "scripts": {
+    "preflight": "node scripts/cdp-preflight.js",
+    "check-session": "bash scripts/check-session.sh"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.3.0",
+    "axios": "^1.6.2",
+    "better-sqlite3": "^9.2.2",
+    "dotenv": "^17.2.3",
+    "openai": "^4.20.1",
+    "puppeteer-core": "^21.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
